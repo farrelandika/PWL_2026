@@ -6,45 +6,62 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\ColorPicker;
-use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
-
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Group;
+use Filament\Forms\Components\DateTimePicker;
 class PostForm
 {
     public static function configure(Schema $schema): Schema
-    {
-        return $schema
-            ->components([
-                DatePicker::make('published_at'),
+{
+    return $schema
+        ->components([
+            //section 1 - post details
+            Section::make("Post Details")
+                ->description("Fill in the details of the post")
+                // ->icon(Heroicon::RocketLaunch)
+                ->icon('heroicon-o-document-text')
+                ->schema([
+                    //grouping fields into 2 columns
+                    Group::make([
+                        TextInput::make("title"),
+                        TextInput::make("slug"),
+                        Select::make("category_id")
+                            ->relationship("category", "name")
+                            ->preload()
+                            ->searchable(),
+                        ColorPicker::make("color"),
+                    ])->columns(2),
 
-                TextInput::make('title')
-                    ->required()
-                    ->minLength(5),
+                    MarkdownEditor::make("content"),
+                ])->columnSpan(2),
 
-                Checkbox::make('published'),
+            //Grouping fields into 2 columns
+            Group::make([
 
-                TextInput::make('slug')
-                    ->required()
-                    ->unique(ignoreRecord: true),
+                //section 2 - image
+                Section::make("Image Upload")
+                    ->icon('heroicon-o-photo')
+                    ->schema([
+                        FileUpload::make("image")
+                            ->disk("public")
+                            ->directory("posts"),
+                    ]),
 
-                Select::make('category_id')
-                    ->relationship('category', 'name')
-                    ->preload()
-                    ->searchable(),
+                //section 3 - meta
+                Section::make("Meta Information")
+                    ->icon('heroicon-o-information-circle')
+                    ->schema([
+                        TagsInput::make("tags"),
+                        Checkbox::make("published"),
+                        DateTimePicker::make("published_at"),
+                    ]),
+            ])->columnSpan(1),
 
-                ColorPicker::make('color'),
-
-                RichEditor::make('content'),
-
-                FileUpload::make('image')
-                    ->disk('public')
-                    ->directory('post'),
-
-                TagsInput::make('tags'),
-
-            ]);
-    }
+        ])->columns(3);
+}
 }
