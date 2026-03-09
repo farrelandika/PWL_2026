@@ -28,10 +28,26 @@ class PostForm
                 ->schema([
                     //grouping fields into 2 columns
                     Group::make([
-                        TextInput::make("title"),
-                        TextInput::make("slug"),
+                        TextInput::make("title")
+                        ->rules('required|min:5|max:50')
+                        ->validationMessages([
+                            'required' => 'Harus Memasukan Judul.',
+                            'min' => 'Judul harus minimal :min karakter.',
+                            'max' => 'Judul tidak boleh melebihi :max karakter.',
+                        ]),
+                        TextInput::make('slug')
+                            ->required()
+                            ->minLength(3)
+                            ->unique()
+                            ->validationMessages([
+                                'unique' => 'Slug harus unik dan tidak boleh sama.',
+                            ]),
                         Select::make("category_id")
                             ->relationship("category", "name")
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Kategori harus dipilih.',
+                            ])
                             ->preload()
                             ->searchable(),
                         ColorPicker::make("color"),
@@ -48,6 +64,7 @@ class PostForm
                     ->icon('heroicon-o-photo')
                     ->schema([
                         FileUpload::make("image")
+                            ->required()
                             ->disk("public")
                             ->directory("posts"),
                     ]),
