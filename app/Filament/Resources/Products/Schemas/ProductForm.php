@@ -52,14 +52,25 @@ class ProductForm
                     ->icon('heroicon-o-photo')
                     ->description('Upload gambar dan atur status')
                     ->schema([
-                        FileUpload::make('image')
-                            ->disk('public')
-                            ->directory('products'),
+                    ImageEntry::make('image')
+                        ->label('Product Image')
+                        ->disk('public'),
 
-                        Checkbox::make('is_active'),
+                    IconEntry::make('is_active')
+                        ->label('Is Active')
+                        ->boolean(),
 
-                        Checkbox::make('is_featured'),
-                    ]),
+                    IconEntry::make('is_featured')
+                        ->label('Is Featured')
+                        ->boolean(),
+
+                    TextEntry::make('created_at')
+                        ->label('Product Creation Date')
+                        ->date('d M Y')
+                        ->color('info'),
+                    ])
+                    ->columnSpanFull(),
+                    
             ])
                 
                 ->submitAction(
