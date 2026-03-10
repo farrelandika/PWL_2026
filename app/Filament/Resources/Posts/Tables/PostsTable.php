@@ -2,9 +2,6 @@
 
 namespace App\Filament\Resources\Posts\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ColorColumn;
@@ -16,23 +13,28 @@ class PostsTable
     {
         return $table
             ->columns([
-                TextColumn::make('title'),
-                TextColumn::make('slug'),
-                TextColumn::make('category.name'),
+
+                TextColumn::make('title')
+                    ->sortable(),
+
+                TextColumn::make('slug')
+                    ->sortable(),
+
+                TextColumn::make('category.name')
+                    ->label('Category')
+                    ->sortable(),
+
                 ColorColumn::make('color'),
+
                 ImageColumn::make('image')
                     ->disk('public'),
+
+                TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->dateTime()
+                    ->sortable(),
+
             ])
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->defaultSort('created_at', 'desc');
     }
 }
