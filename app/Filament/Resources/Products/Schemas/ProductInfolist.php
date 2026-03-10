@@ -33,7 +33,7 @@ class ProductInfolist
                                 TextEntry::make('sku')
                                     ->label('Product SKU')
                                     ->badge()
-                                    ->color('success'),
+                                    ->color('warning'),
 
                                 TextEntry::make('description')
                                     ->label('Product Description'),
@@ -45,11 +45,13 @@ class ProductInfolist
                             ->badgeColor(fn ($record) => $record->stock > 10 ? 'success' : 'danger')
                             ->schema([
                                 TextEntry::make('price')
-                                    ->label('Price')
-                                    ->icon('heroicon-o-currency-dollar'),
+                                    ->label('Product Price')
+                                    ->icon('heroicon-o-currency-dollar')
+                                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
                                 TextEntry::make('stock')
-                                    ->label('Stock'),
+                                    ->label('Product Stock')
+                                    ->icon('heroicon-o-cube'),
                             ]),
 
                         Tab::make('Media & Status')
