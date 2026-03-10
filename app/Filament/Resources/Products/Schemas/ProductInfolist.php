@@ -3,7 +3,9 @@
 namespace App\Filament\Resources\Products\Schemas;
 
 use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\IconEntry;
@@ -14,54 +16,58 @@ class ProductInfolist
     {
         return $schema
             ->components([
-                Section::make('Product Info')
-                    ->schema([
-                        TextEntry::make('name')
-                            ->label('Product Name')
-                            ->weight('bold')
-                            ->color('primary'),
+                Tabs::make('Product Tabs')
+                    ->tabs([
 
-                        TextEntry::make('id')
-                            ->label('Product ID'),
+                        Tab::make('Product Info')
+                            ->icon('heroicon-o-academic-cap')
+                            ->schema([
+                                TextEntry::make('name')
+                                    ->label('Product Name')
+                                    ->weight('bold')
+                                    ->color('primary'),
 
-                        TextEntry::make('sku')
-                            ->label('Product SKU')
-                            ->badge()
-                            ->color('success'),
+                                TextEntry::make('id')
+                                    ->label('Product ID'),
 
-                        TextEntry::make('description')
-                            ->label('Product Description'),
+                                TextEntry::make('sku')
+                                    ->label('Product SKU')
+                                    ->badge()
+                                    ->color('success'),
 
-                        Section::make('Pricing & Stock')
+                                TextEntry::make('description')
+                                    ->label('Product Description'),
+                            ]),
+
+                        Tab::make('Pricing & Stock')
+                            ->icon('heroicon-o-currency-dollar')
+                            ->badge(fn ($record) => $record->stock)
+                            ->badgeColor(fn ($record) => $record->stock > 10 ? 'success' : 'danger')
                             ->schema([
                                 TextEntry::make('price')
-                                    ->label('Product Price')
+                                    ->label('Price')
                                     ->icon('heroicon-o-currency-dollar'),
 
                                 TextEntry::make('stock')
-                                    ->label('Product Stock'),
+                                    ->label('Stock'),
                             ]),
-                            Section::make('Media & Status')
-                                ->schema([
-                                    ImageEntry::make('image')
-                                        ->label('Product Image')
-                                        ->disk('public'),
 
-                                    IconEntry::make('is_active')
-                                        ->label('Is Active')
-                                        ->boolean(),
+                        Tab::make('Media & Status')
+                            ->icon('heroicon-o-photo')
+                            ->schema([
+                                ImageEntry::make('image')
+                                    ->label('Product Image')
+                                    ->disk('public'),
 
-                                    IconEntry::make('is_featured')
-                                        ->label('Is Featured')
-                                        ->boolean(),
-                                ])
-                                ->columnSpanFull(),
-                ])
-                
+                                IconEntry::make('is_active')
+                                    ->label('Is Active')
+                                    ->boolean(),
 
-                    ->columnSpanFull(),
-                            ]);
-                    
-                
+                                IconEntry::make('is_featured')
+                                    ->label('Is Featured')
+                                    ->boolean(),
+                            ]),
+                    ])
+            ]);
     }
 }
