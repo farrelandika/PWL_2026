@@ -6,35 +6,65 @@ use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
+
 
 class PostsTable
 {
     public static function configure(Table $table): Table
     {
+        
         return $table
-            ->columns([
+    ->columns([
+        TextColumn::make('title')
+            ->sortable()
+            ->searchable(),
 
-                TextColumn::make('title')
-                    ->sortable(),
+        TextColumn::make('slug')
+            ->sortable()
+            ->searchable(),
 
-                TextColumn::make('slug')
-                    ->sortable(),
+        TextColumn::make('category.name')
+            ->label('Category')
+            ->sortable()
+            ->searchable(),
 
-                TextColumn::make('category.name')
-                    ->label('Category')
-                    ->sortable(),
+        ColorColumn::make('color'),
 
-                ColorColumn::make('color'),
+        ImageColumn::make('image')
+            ->disk('public'),
 
-                ImageColumn::make('image')
-                    ->disk('public'),
+        TextColumn::make('created_at')
+            ->label('Created At')
+            ->dateTime()
+            ->sortable(),
+    ])
+    ->filters([
 
-                TextColumn::make('created_at')
-                    ->label('Created At')
-                    ->dateTime()
-                    ->sortable(),
+        SelectFilter::make('category_id')
+            ->label('Select Category')
+            ->relationship('category', 'name')
+            ->preload(),
 
+        Filter::make('created_at')
+            ->label('Creation Date')
+            ->schema([
+                DatePicker::make('created_at')
+                    ->label('Select Date'),
             ])
-            ->defaultSort('created_at', 'desc');
+            ->query(function ($query, $data) {
+                return $query->when(
+                    $data['created_at'],
+                    fn ($query, $date) => $query->whereDate('created_at', $date)
+                );
+            }),
+
+            
+
+    ])
+
+    ->defaultSort('created_at', 'desc');
     }
 }

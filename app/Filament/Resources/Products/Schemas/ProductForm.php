@@ -48,39 +48,27 @@ class ProductForm
                             ->required(),
                     ]),
 
-                Step::make('Media & Status')
-                    ->icon('heroicon-o-photo')
-                    ->description('Upload gambar dan atur status')
+                Step::make("Media & Status")
+                    ->description("Upload gambar dan atur status")
+                    ->icon("heroicon-o-photo")
                     ->schema([
-                    ImageEntry::make('image')
-                        ->label('Product Image')
-                        ->disk('public'),
-
-                    IconEntry::make('is_active')
-                        ->label('Is Active')
-                        ->boolean(),
-
-                    IconEntry::make('is_featured')
-                        ->label('Is Featured')
-                        ->boolean(),
-
-                    TextEntry::make('created_at')
-                        ->label('Product Creation Date')
-                        ->date('d M Y')
-                        ->color('info'),
-                    ])
-                    ->columnSpanFull(),
-                    
+                        FileUpload::make("image")
+                            ->disk("public")
+                            ->directory("products")
+                            ->required(),
+                        Checkbox::make("is_active")->required(),
+                        Checkbox::make("is_featured")->required(),
+                    ]),
             ])
-                
+                ->columnSpanFull()
                 ->submitAction(
-                    Action::make('save')
-                        ->label('Save Product')
-                        ->color('primary')
-                        ->submit('save')
-                )
-                
-            ]);
+                    Action::make("save")
+                        ->label("Save Product")
+                        ->button()
+                        ->color("primary")
+                        ->submit("save"),
+                ),
+        ]);
             
     }
 }
