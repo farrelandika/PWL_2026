@@ -10,7 +10,11 @@ use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Columns\IconColumn;
-
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ReplicateAction;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Checkbox;
 
 class PostsTable
 {
@@ -60,6 +64,25 @@ class PostsTable
             ->label('Created At')
             ->dateTime()
             ->sortable(),
+    ])
+
+    ->recordActions([
+        EditAction::make(),
+        DeleteAction::make(),
+        ReplicateAction::make(),
+        Action::make('status')
+            ->icon('heroicon-o-check-circle')
+            ->label('Status Change')
+            ->action(function ($record, $data) {
+                $record->update([
+                    'published' => $data['published'],
+                ]);
+            })
+            ->schema([
+                Checkbox::make('published')
+                    ->default(fn ($record): bool => $record->published),
+            ])
+            ->requiresConfirmation(),
     ])
     ->filters([
 
